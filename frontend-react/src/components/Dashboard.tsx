@@ -116,6 +116,14 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
               </button>
             </div>
 
+            {/* Floating Chat Button */}
+            <button className="fixed bottom-8 right-8 w-14 h-14 bg-primary text-white rounded-full shadow-lg hover:bg-primary-hover transition-all flex items-center justify-center z-50 group hover:scale-110 active:scale-95">
+              <MessageSquare className="w-6 h-6" />
+              <span className="absolute right-full mr-3 bg-white text-primary text-xs font-bold py-1.5 px-3 rounded-lg shadow-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-card-border pointer-events-none">
+                Chat with Assistant
+              </span>
+            </button>
+
             {/* Vitals Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               {/* Heart Rate */}

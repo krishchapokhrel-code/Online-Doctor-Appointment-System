@@ -49,15 +49,15 @@ export default function Signup({ onNavigate }: SignupProps) {
 
       {/* Right Panel */}
       <div className="flex-1 flex flex-col justify-center items-center p-6 sm:p-12 overflow-y-auto mx-[100px]">
-        <div className="w-full max-w-[420px] py-8">
+        <div className="w-full max-w-[460px] py-10 bg-white px-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-card-border overflow-y-auto">
           <div className="lg:hidden flex items-center gap-2 mb-8 justify-center">
             <img src={logo} alt="Aura Health Logo" className="h-20 w-auto object-contain" />
           </div>
 
-          <h2 className="text-3xl font-semibold text-text-main mb-2">Create account</h2>
-          <p className="text-text-sec mb-8">Join us and manage your health efficiently.</p>
+          <h2 className="text-4xl font-bold text-text-main mb-3">Create account</h2>
+          <p className="text-text-sec mb-10 text-lg">Join us and manage your health efficiently.</p>
           
-          <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onNavigate('dashboard'); }}>
+          <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); onNavigate('dashboard'); }}>
             
             <div className="space-y-1">
               <label className="text-sm font-medium text-text-main">Full Name</label>

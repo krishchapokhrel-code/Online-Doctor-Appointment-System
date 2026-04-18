@@ -45,15 +45,15 @@ export default function Login({ onNavigate }: LoginProps) {
 
       {/* Right Panel */}
       <div className="flex-1 flex flex-col justify-center items-center p-6 sm:p-12 mx-[100px]">
-        <div className="w-full max-w-[420px]">
+        <div className="w-full max-w-[440px] bg-white p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-card-border">
           <div className="lg:hidden flex items-center gap-2 mb-8 justify-center">
             <img src={logo} alt="Aura Health Logo" className="h-20 w-auto object-contain" />
           </div>
 
-          <h2 className="text-3xl font-semibold text-text-main mb-2">Welcome back</h2>
-          <p className="text-text-sec mb-8">Sign in to manage your health journey</p>
+          <h2 className="text-4xl font-bold text-text-main mb-3">Welcome back</h2>
+          <p className="text-text-sec mb-10 text-lg">Sign in to manage your health journey</p>
           
-          <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onNavigate('dashboard'); }}>
+          <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); onNavigate('dashboard'); }}>
             <div className="space-y-1">
               <label className="text-sm font-medium text-text-main">Email Address</label>
               <div className="relative">
