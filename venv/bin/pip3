@@ -1,4 +1,4 @@
-#!/home/aarya/Desktop/Python/venv/bin/python3
+#!/home/aarya/Desktop/Online-Doctor-Appointment-System/venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
