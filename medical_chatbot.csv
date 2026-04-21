@@ -1,0 +1,64 @@
+text,label
+Hi,greeting
+Hello,greeting
+Hey,greeting
+Good morning,greeting
+Good evening,greeting
+Hi there,greeting
+Hello bot,greeting
+Hey doctor,greeting
+
+I have headache,symptom_headache
+My head hurts,symptom_headache
+Migraine pain,symptom_headache
+Severe headache,symptom_headache
+Head is paining,symptom_headache
+Pain in my head,symptom_headache
+Feeling headache,symptom_headache
+
+I have fever,symptom_fever
+High temperature,symptom_fever
+Feeling feverish,symptom_fever
+I am having fever,symptom_fever
+My body is hot,symptom_fever
+Temperature is rising,symptom_fever
+I feel very hot,symptom_fever
+
+I have chest pain,symptom_heart
+Pain in chest,symptom_heart
+Heart is hurting,symptom_heart
+Tightness in chest,symptom_heart
+Chest discomfort,symptom_heart
+Pain near heart,symptom_heart
+Heavy chest feeling,symptom_heart
+
+I have skin rash,symptom_skin
+Skin irritation,symptom_skin
+Red spots on skin,symptom_skin
+Itchy skin,symptom_skin
+Rashes on body,symptom_skin
+Skin allergy,symptom_skin
+Burning skin feeling,symptom_skin
+
+I want to book appointment,booking
+Book doctor,booking
+Schedule appointment,booking
+I need an appointment,booking
+Can I book doctor,booking
+I want to see a doctor,booking
+Make appointment,booking
+
+Tomorrow at 5 pm,date_time
+Next Monday,date_time
+Today evening,date_time
+Tomorrow morning,date_time
+Book for today,date_time
+Schedule for tomorrow,date_time
+Next week,date_time
+
+Thanks,goodbye
+Thank you,goodbye
+Bye,goodbye
+See you,goodbye
+Thanks a lot,goodbye
+Okay bye,goodbye
