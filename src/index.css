@@ -25,4 +25,5 @@ body {
   background-color: var(--color-bg-base);
   color: var(--color-text-main);
   margin: 0;
-}
+}/* Responsive fixes for App container */
+@media (max-width: 768px) { #root { padding: 1rem; } }
