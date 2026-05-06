@@ -5,6 +5,7 @@ import Dashboard from './components/Dashboard.tsx';
 import DoctorPanel from './components/DoctorPanel.tsx';
 import ChatbotInterface from './components/ChatbotInterface.tsx';
 import AppointmentBooking from './components/AppointmentBooking.tsx';
+import DoctorChat from './components/DoctorChat.tsx';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('login');
@@ -29,6 +30,9 @@ export default function App() {
       </div>
       <div style={{ display: currentScreen === 'chatbot' ? 'block' : 'none' }}>
         <ChatbotInterface onBack={() => handleNavigate('dashboard')} />
+      </div>
+      <div style={{ display: currentScreen === 'doctorChat' ? 'block' : 'none' }}>
+        <DoctorChat onBack={() => handleNavigate('dashboard')} />
       </div>
       <div style={{ display: currentScreen === 'booking' ? 'block' : 'none' }}>
         <AppointmentBooking 
