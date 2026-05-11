@@ -1,0 +1,6 @@
+{
+  "name": "Aura Health",
+  "description": "A full-stack health dashboard web app with login, signup, and a dashboard screen.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
