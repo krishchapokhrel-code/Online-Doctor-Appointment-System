@@ -19,15 +19,13 @@ export default function Login() {
     setLoading(true);
 
     try {
-      // TODO: Replace with real API call
-      // const response = await api.post('/login', { email, password, role });
-      
-      // Admin mock bypass
       const effectiveRole = email === 'admin@admin.com' ? 'admin' : role;
+      const userId = effectiveRole === 'admin' ? 'admin1' : effectiveRole === 'doctor' ? 'd1' : 'p1';
+      const userName = effectiveRole === 'admin' ? 'Admin' : effectiveRole === 'doctor' ? 'Dr. Aasha Poudel' : 'Aarav Shrestha';
+      const specialty = effectiveRole === 'doctor' ? 'Cardiologist' : undefined;
 
-      // Mock login for now
       setTimeout(() => {
-        login({ id: '1', name: 'Test User', role: effectiveRole, email }, 'mock-token');
+        login({ id: userId, name: userName, role: effectiveRole, email, specialty }, 'mock-token');
         toast.success(`Logged in as ${effectiveRole}`);
         if (effectiveRole === 'doctor') {
           navigate('/doctor-panel');
@@ -48,7 +46,6 @@ export default function Login() {
     <div className="flex min-h-screen bg-bg-base">
       {/* Left Panel */}
       <div className="hidden lg:flex flex-col justify-between w-[42%] bg-gradient-to-br from-[#0d4f6b] via-[#1a7a9e] to-[#0f8c7a] p-12 text-white relative overflow-hidden">
-        {/* Decorative circles */}
         <div className="absolute top-[-10%] right-[-10%] w-64 h-64 border border-white/10 rounded-full"></div>
         <div className="absolute bottom-[-5%] left-[-10%] w-80 h-80 border border-white/10 rounded-full"></div>
         <div className="absolute top-[20%] right-[15%] w-32 h-32 border border-white/5 rounded-full"></div>
@@ -107,8 +104,8 @@ export default function Login() {
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-mut" />
                 <input 
-                  type="email"                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}                  placeholder="name@example.com"
+                  type="email" value={email}
+                  onChange={(e) => setEmail(e.target.value)} placeholder="name@example.com"
                   className="w-full bg-input-bg border-[1.5px] border-input-border pl-10 pr-4 py-2.5 rounded-input focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all text-text-main placeholder-text-mut"
                   required
                 />
@@ -118,7 +115,7 @@ export default function Login() {
             <div className="space-y-1">
               <div className="flex justify-between items-center">
                 <label className="text-sm font-medium text-text-main">Password</label>
-                <a href="#" className="text-sm font-medium text-accent hover:text-primary transition-colors">Forgot password?</a>
+                <button type="button" onClick={() => toast('Password reset link sent!', { icon: '📧' })} className="text-sm font-medium text-accent hover:text-primary transition-colors">Forgot password?</button>
               </div>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-mut" />

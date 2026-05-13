@@ -22,12 +22,9 @@ export default function Signup() {
     setLoading(true);
 
     try {
-      // TODO: Replace with real API call
-      // const response = await api.post('/signup', { name, email, phone, password, role });
-      
-      // Mock signup for now
       setTimeout(() => {
-        login({ id: '2', name: name || 'Test User', role, email }, 'mock-token');
+        const userId = role === 'doctor' ? 'd1' : 'p1';
+        login({ id: userId, name: name || 'Test User', role, email, phone }, 'mock-token');
         toast.success(`Account created as ${role}`);
         if (role === 'doctor') {
           navigate('/doctor-panel');
@@ -46,7 +43,6 @@ export default function Signup() {
     <div className="flex min-h-screen bg-bg-base">
       {/* Left Panel */}
       <div className="hidden lg:flex flex-col justify-between w-[42%] bg-gradient-to-br from-[#0d4f6b] via-[#1a7a9e] to-[#0f8c7a] p-12 text-white relative overflow-hidden">
-        {/* Decorative circles */}
         <div className="absolute top-[-10%] right-[-10%] w-64 h-64 border border-white/10 rounded-full"></div>
         <div className="absolute bottom-[-5%] left-[-10%] w-80 h-80 border border-white/10 rounded-full"></div>
         <div className="absolute top-[20%] right-[15%] w-32 h-32 border border-white/5 rounded-full"></div>
@@ -81,7 +77,7 @@ export default function Signup() {
       </div>
 
       {/* Right Panel */}
-      <div className="flex-1 flex flex-col justify-center items-center p-6 sm:p-12 overflow-y-auto mx-[100px]">
+      <div className="flex-1 flex flex-col justify-center items-center p-6 sm:p-12 overflow-y-auto">
         <div className="w-full max-w-[460px] py-10 bg-white px-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-card-border overflow-y-auto">
           <div className="lg:hidden flex items-center gap-2 mb-8 justify-center">
             <img src={logo} alt="Aura Health Logo" className="h-20 w-auto object-contain" />
@@ -115,8 +111,8 @@ export default function Signup() {
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-mut" />
                 <input 
-                  type="text"                   value={name}
-                  onChange={(e) => setName(e.target.value)}                  placeholder="Ganesh Dahal"
+                  type="text" value={name}
+                  onChange={(e) => setName(e.target.value)} placeholder="Ganesh Dahal"
                   className="w-full bg-input-bg border-[1.5px] border-input-border pl-10 pr-4 py-2.5 rounded-input focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all text-text-main placeholder-text-mut"
                   required
                 />
@@ -145,6 +141,8 @@ export default function Signup() {
                   <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-mut" />
                   <input 
                     type="tel" 
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
                     placeholder="+"
                     className="w-full bg-input-bg border-[1.5px] border-input-border pl-10 pr-4 py-2.5 rounded-input focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all text-text-main placeholder-text-mut"
                     required
@@ -158,6 +156,8 @@ export default function Signup() {
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-mut" />
                   <input 
                     type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     className="w-full bg-input-bg border-[1.5px] border-input-border pl-10 pr-10 py-2.5 rounded-input focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all text-text-main placeholder-text-mut"
                     required
@@ -187,15 +187,16 @@ export default function Signup() {
 
             <button 
               type="submit" 
-              className="w-full bg-primary hover:bg-primary-hover text-white font-medium py-3 rounded-btn transition-colors"
+              disabled={loading}
+              className={`w-full bg-primary hover:bg-primary-hover text-white font-medium py-3 rounded-btn transition-colors ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
             >
-              Create Account
+              {loading ? 'Creating Account...' : 'Create Account'}
             </button>
           </form>
 
           <p className="text-center mt-6 text-text-sec text-sm">
             Already have an account?{' '}
-            <button onClick={() => onNavigate('login')} className="text-accent font-medium hover:text-primary transition-colors">
+            <button onClick={() => navigate('/login')} className="text-accent font-medium hover:text-primary transition-colors">
               Login
             </button>
           </p>
