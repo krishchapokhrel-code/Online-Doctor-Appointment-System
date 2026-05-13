@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Send, Bot, User, ArrowLeft, Heart, Search } from 'lucide-react';
+import api from '../api';
 import logo from '../assets/ah_logo.png';
 
 interface ChatbotInterfaceProps {
@@ -7,24 +9,47 @@ interface ChatbotInterfaceProps {
 }
 
 export default function ChatbotInterface({ onBack }: ChatbotInterfaceProps) {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState([
     { id: 1, sender: 'bot', text: 'Hello! I am Aura, your AI health assistant. I can help you find doctors, manage your schedule, or answer simple health queries. How can I assist you today?' }
   ]);
   const [inputVal, setInputVal] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
-  const handleSend = () => {
-    if (!inputVal.trim()) return;
-    setMessages([...messages, { id: Date.now(), sender: 'user', text: inputVal }]);
-    setInputVal('');
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const handleSend = async () => {
+    if (!inputVal.trim() || isLoading) return;
+    const userText = inputVal;
     
-    // Simulated reply
-    setTimeout(() => {
+    setMessages(prev => [...prev, { id: Date.now(), sender: 'user', text: userText }]);
+    setInputVal('');
+    setIsLoading(true);
+    
+    try {
+      const response = await api.post('/chat', {
+        user_text: userText,
+        intent: 'General'
+      });
+      
       setMessages(prev => [...prev, { 
         id: Date.now(), 
         sender: 'bot', 
-        text: 'I can certainly help with that. Are you looking to book an appointment with a specific specialist?' 
+        text: response.data.response 
       }]);
-    }, 1000);
+    } catch (error) {
+      console.error(error);
+      setMessages(prev => [...prev, { 
+        id: Date.now(), 
+        sender: 'bot', 
+        text: 'Sorry, I am having trouble connecting to the network right now.' 
+      }]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -33,7 +58,7 @@ export default function ChatbotInterface({ onBack }: ChatbotInterfaceProps) {
       <div className="h-[70px] bg-white border-b border-card-border flex items-center justify-between px-6 flex-shrink-0 z-10">
         <div className="flex items-center gap-4">
           <button 
-            onClick={onBack}
+            onClick={() => navigate('/dashboard')}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors text-text-main"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -70,8 +95,7 @@ export default function ChatbotInterface({ onBack }: ChatbotInterfaceProps) {
                 </div>
               )}
               
-              <div className={`max-w-[75%] px-5 py-3.5 ${msg.sender === 'user' ? 'bg-primary text-white rounded-2xl rounded-tr-sm' : 'bg-white text-text-main rounded-2xl rounded-tl-sm border border-card-border shadow-sm'} text-sm leading-relaxed`}>
-                {msg.text}
+              <div className={`max-w-[75%] px-5 py-3.5 ${msg.sender === 'user' ? 'bg-primary text-white rounded-2xl rounded-tr-sm' : 'bg-white text-text-main rounded-2xl rounded-tl-sm border border-card-border shadow-sm'} text-sm leading-relaxed`} dangerouslySetInnerHTML={{__html: msg.text.replace(/\n/g, '<br/>')}}>
               </div>
 
               {msg.sender === 'user' && (
@@ -81,6 +105,17 @@ export default function ChatbotInterface({ onBack }: ChatbotInterfaceProps) {
               )}
             </div>
           ))}
+          {isLoading && (
+            <div className="flex justify-start items-end gap-3">
+              <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                <Bot className="w-5 h-5" />
+              </div>
+              <div className="px-5 py-3.5 bg-white text-text-main rounded-2xl rounded-tl-sm border border-card-border shadow-sm text-sm">
+                <span className="animate-pulse">Thinking...</span>
+              </div>
+            </div>
+          )}
+          <div ref={bottomRef} />
         </div>
       </div>
 

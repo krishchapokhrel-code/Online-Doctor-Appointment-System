@@ -1,16 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Star, MessageSquare, Calendar } from 'lucide-react';
 
-interface PatientDoctorsProps {
-  onNavigate: (screen: string) => void;
-}
+export default function PatientDoctors() {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [doctors, setDoctors] = useState<any[]>([]);
 
-export default function PatientDoctors({ onNavigate }: PatientDoctorsProps) {
-  const doctors = [
-    { id: 1, name: 'Dr. Aasha Poudel', specialty: 'Cardiologist', rating: 4.9, reviews: 128, status: 'Available' },
-    { id: 2, name: 'Dr. Saugat Rijal', specialty: 'General Physician', rating: 4.8, reviews: 214, status: 'Busy' },
-    { id: 3, name: 'Dr. Kriti Gurung', specialty: 'Dermatologist', rating: 4.7, reviews: 96, status: 'Available' },
-  ];
+  useEffect(() => {
+    setTimeout(() => {
+      setDoctors([
+        { id: 1, name: 'Dr. Aasha Poudel', specialty: 'Cardiologist', rating: 4.9, reviews: 128, status: 'Available' },
+        { id: 2, name: 'Dr. Saugat Rijal', specialty: 'General Physician', rating: 4.8, reviews: 214, status: 'Busy' },
+        { id: 3, name: 'Dr. Kriti Gurung', specialty: 'Dermatologist', rating: 4.7, reviews: 96, status: 'Available' },
+      ]);
+      setLoading(false);
+    }, 800);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -43,7 +57,7 @@ export default function PatientDoctors({ onNavigate }: PatientDoctorsProps) {
                 onClick={() => {
                   localStorage.setItem('selectedDoctorName', doc.name);
                   localStorage.setItem('selectedDoctorSpecialty', doc.specialty);
-                  onNavigate('doctorChat');
+                  navigate('/chatbot');
                 }}
                 className="flex-1 py-2 text-sm font-medium text-primary bg-[#f0f7fa] border border-[#b5e0ef] rounded-lg hover:bg-primary/10 transition-colors flex items-center justify-center gap-2"
               >
@@ -53,7 +67,7 @@ export default function PatientDoctors({ onNavigate }: PatientDoctorsProps) {
                 onClick={() => {
                   localStorage.setItem('selectedDoctorName', doc.name);
                   localStorage.setItem('selectedDoctorSpecialty', doc.specialty);
-                  onNavigate('booking');
+                  navigate('/booking');
                 }}
                 className="flex-1 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary-hover transition-colors flex items-center justify-center gap-2"
               >

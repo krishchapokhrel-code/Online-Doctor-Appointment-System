@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Calendar, Users, Settings, LogOut, Search, Bell, MessageSquare } from 'lucide-react';
+import { useAuthStore } from '../store/authStore';
 import logo from '../assets/ah_logo.png';
 import DoctorOverview from './DoctorOverview';
 import DoctorSchedule from './DoctorSchedule';
 import DoctorPatients from './DoctorPatients';
 
-interface DoctorPanelProps {
-  onNavigate: (screen: string) => void;
-}
-
-export default function DoctorPanel({ onNavigate }: DoctorPanelProps) {
+export default function DoctorPanel() {
+  const navigate = useNavigate();
+  const logout = useAuthStore((state) => state.logout);
   const [activeTab, setActiveTab] = useState('overview');
 
   const renderContent = () => {
@@ -65,7 +65,10 @@ export default function DoctorPanel({ onNavigate }: DoctorPanelProps) {
             Settings
           </button>
           <button 
-            onClick={() => onNavigate('login')}
+            onClick={() => {
+              logout();
+              navigate('/login');
+            }}
             className="w-full flex items-center gap-3 px-3 py-2.5 text-text-sec hover:bg-gray-50 rounded-lg font-medium text-sm transition-colors"
           >
             <LogOut className="w-5 h-5" />

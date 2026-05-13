@@ -1,21 +1,44 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Shield, Mail, Lock, Eye, EyeOff, User, Phone } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { useAuthStore } from '../store/authStore';
 import logo from '../assets/ah_logo.png';
 
-interface SignupProps {
-  onNavigate: (screen: string) => void;
-}
-
-export default function Signup({ onNavigate }: SignupProps) {
+export default function Signup() {
+  const navigate = useNavigate();
+  const login = useAuthStore((state) => state.login);
   const [showPassword, setShowPassword] = React.useState(false);
-  const [role, setRole] = React.useState('patient');
+  const [role, setRole] = React.useState<'patient' | 'doctor'>('patient');
+  
+  const [name, setName] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [phone, setPhone] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (role === 'doctor') {
-      onNavigate('doctorPanel');
-    } else {
-      onNavigate('dashboard');
+    setLoading(true);
+
+    try {
+      // TODO: Replace with real API call
+      // const response = await api.post('/signup', { name, email, phone, password, role });
+      
+      // Mock signup for now
+      setTimeout(() => {
+        login({ id: '2', name: name || 'Test User', role, email }, 'mock-token');
+        toast.success(`Account created as ${role}`);
+        if (role === 'doctor') {
+          navigate('/doctor-panel');
+        } else {
+          navigate('/dashboard');
+        }
+        setLoading(false);
+      }, 1000);
+    } catch (error) {
+      toast.error('Signup failed. Please try again.');
+      setLoading(false);
     }
   };
 
@@ -92,8 +115,8 @@ export default function Signup({ onNavigate }: SignupProps) {
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-mut" />
                 <input 
-                  type="text" 
-                  placeholder="Ganesh Dahal"
+                  type="text"                   value={name}
+                  onChange={(e) => setName(e.target.value)}                  placeholder="Ganesh Dahal"
                   className="w-full bg-input-bg border-[1.5px] border-input-border pl-10 pr-4 py-2.5 rounded-input focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all text-text-main placeholder-text-mut"
                   required
                 />
@@ -106,6 +129,8 @@ export default function Signup({ onNavigate }: SignupProps) {
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-mut" />
                 <input 
                   type="email" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
                   className="w-full bg-input-bg border-[1.5px] border-input-border pl-10 pr-4 py-2.5 rounded-input focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all text-text-main placeholder-text-mut"
                   required

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Logs
 logs
 *.log
@@ -11,6 +10,8 @@ lerna-debug.log*
 node_modules/
 dist
 dist-ssr
+build/
+coverage/
 *.local
 
 # Python
@@ -22,7 +23,8 @@ __pycache__/
 .pytest_cache/
 
 # Environment
-.env
+.env*
+!.env.example
 
 # Editor files
 .vscode/*
@@ -34,13 +36,3 @@ __pycache__/
 *.njsproj
 *.sln
 *.sw?
-=======
-node_modules/
-build/
-dist/
-coverage/
-.DS_Store
-*.log
-.env*
-!.env.example
->>>>>>> d5a92515d4870e6ce7117fd8da89cafa3dfc3444

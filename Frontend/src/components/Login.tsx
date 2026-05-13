@@ -1,21 +1,46 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Shield, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { useAuthStore } from '../store/authStore';
+import toast from 'react-hot-toast';
 import logo from '../assets/ah_logo.png';
 
-interface LoginProps {
-  onNavigate: (screen: string) => void;
-}
-
-export default function Login({ onNavigate }: LoginProps) {
+export default function Login() {
+  const navigate = useNavigate();
+  const login = useAuthStore((state) => state.login);
   const [showPassword, setShowPassword] = React.useState(false);
-  const [role, setRole] = React.useState('patient');
+  const [role, setRole] = React.useState<'patient' | 'doctor' | 'admin'>('patient');
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (role === 'doctor') {
-      onNavigate('doctorPanel');
-    } else {
-      onNavigate('dashboard');
+    setLoading(true);
+
+    try {
+      // TODO: Replace with real API call
+      // const response = await api.post('/login', { email, password, role });
+      
+      // Admin mock bypass
+      const effectiveRole = email === 'admin@admin.com' ? 'admin' : role;
+
+      // Mock login for now
+      setTimeout(() => {
+        login({ id: '1', name: 'Test User', role: effectiveRole, email }, 'mock-token');
+        toast.success(`Logged in as ${effectiveRole}`);
+        if (effectiveRole === 'doctor') {
+          navigate('/doctor-panel');
+        } else if (effectiveRole === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/dashboard');
+        }
+        setLoading(false);
+      }, 1000);
+    } catch (error) {
+      toast.error('Login failed. Please check your credentials.');
+      setLoading(false);
     }
   };
 
@@ -82,8 +107,8 @@ export default function Login({ onNavigate }: LoginProps) {
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-mut" />
                 <input 
-                  type="email" 
-                  placeholder="name@example.com"
+                  type="email"                   value={email}
+                  onChange={(e) => setEmail(e.target.value)}                  placeholder="name@example.com"
                   className="w-full bg-input-bg border-[1.5px] border-input-border pl-10 pr-4 py-2.5 rounded-input focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all text-text-main placeholder-text-mut"
                   required
                 />
@@ -99,6 +124,8 @@ export default function Login({ onNavigate }: LoginProps) {
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-mut" />
                 <input 
                   type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   className="w-full bg-input-bg border-[1.5px] border-input-border pl-10 pr-10 py-2.5 rounded-input focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all text-text-main placeholder-text-mut"
                   required
@@ -124,15 +151,16 @@ export default function Login({ onNavigate }: LoginProps) {
 
             <button 
               type="submit" 
-              className="w-full bg-primary hover:bg-primary-hover text-white font-medium py-3 rounded-btn transition-colors"
+              disabled={loading}
+              className={`w-full bg-primary hover:bg-primary-hover text-white font-medium py-3 rounded-btn transition-colors ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
             >
-              Sign in
+              {loading ? 'Signing in...' : 'Sign in'}
             </button>
           </form>
 
           <p className="text-center mt-6 text-text-sec text-sm">
             Don't have an account?{' '}
-            <button onClick={() => onNavigate('signup')} className="text-accent font-medium hover:text-primary transition-colors">
+            <button type="button" onClick={() => navigate('/signup')} className="text-accent font-medium hover:text-primary transition-colors">
               Create account
             </button>
           </p>

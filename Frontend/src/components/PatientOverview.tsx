@@ -1,24 +1,52 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Shield, LayoutDashboard, Calendar, Users, FileText, Asterisk, Settings, LogOut, Search, Bell, MessageSquare, Heart, Moon, Scale, ChevronRight } from 'lucide-react';
+import { useAuthStore } from '../store/authStore';
+import api from '../api';
 
-interface PatientOverviewProps {
-  onNavigate: (screen: string) => void;
-}
+export default function PatientOverview() {
+  const navigate = useNavigate();
+  const { user } = useAuthStore();
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState<any>(null);
 
-export default function PatientOverview({ onNavigate }: PatientOverviewProps) {
+  useEffect(() => {
+    // Mock fetching patient overview data
+    setTimeout(() => {
+      setStats({
+        appointments: 2,
+        heartRate: 72,
+        sleepScore: 8.2,
+        weight: 76.4,
+        healthScore: 88,
+        bloodPressure: '120/80',
+        bloodSugar: 92
+      });
+      setLoading(false);
+    }, 800);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-7xl mx-auto space-y-6">
             
             {/* Greeting Row */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <h1 className="text-2xl font-bold text-text-main mb-1">Good morning, Aarav.</h1>
+                <h1 className="text-2xl font-bold text-text-main mb-1">Good morning, {user?.name?.split(' ')[0] || 'Aarav'}.</h1>
                 <p className="text-text-sec text-sm">
-                  Your vitals look stable today. You have <span className="text-accent font-medium">2 appointments scheduled</span>.
+                  Your vitals look stable today. You have <span className="text-accent font-medium">{stats.appointments} appointments scheduled</span>.
                 </p>
               </div>
               <button 
-                onClick={() => onNavigate('booking')}
+                onClick={() => navigate('/booking')}
                 className="bg-primary hover:bg-primary-hover text-white px-5 py-2.5 rounded-btn font-medium transition-colors whitespace-nowrap self-start sm:self-auto text-sm shadow-sm"
               >
                 + Book Appointment
@@ -30,7 +58,7 @@ export default function PatientOverview({ onNavigate }: PatientOverviewProps) {
               onClick={() => {
                 localStorage.setItem('selectedDoctorName', 'Dr. Aasha Poudel');
                 localStorage.setItem('selectedDoctorSpecialty', 'Cardiologist');
-                onNavigate('doctorChat');
+                navigate('/chatbot');
               }}
               className="fixed bottom-8 right-8 w-14 h-14 bg-primary text-white rounded-full shadow-lg hover:bg-primary-hover transition-all flex items-center justify-center z-50 group hover:scale-110 active:scale-95"
             >

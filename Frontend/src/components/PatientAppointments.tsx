@@ -1,31 +1,45 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Calendar, Clock, ChevronRight, Video, MapPin } from 'lucide-react';
 
-interface PatientAppointmentsProps {
-  onNavigate: (screen: string) => void;
-}
+export default function PatientAppointments() {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [upcomingAppointments, setUpcomingAppointments] = useState<any[]>([]);
 
-export default function PatientAppointments({ onNavigate }: PatientAppointmentsProps) {
-  const upcomingAppointments = [
-    {
-      id: 1,
-      doctor: 'Dr. Aasha Poudel',
-      specialty: 'Cardiologist',
-      date: 'Oct 12, 2023',
-      time: '09:30 AM',
-      type: 'In-person',
-      location: 'Heart Care Center, Room 302',
-    },
-    {
-      id: 2,
-      doctor: 'Dr. Saugat Rijal',
-      specialty: 'General Physician',
-      date: 'Oct 15, 2023',
-      time: '02:15 PM',
-      type: 'Video Consult',
-      location: 'Online link',
-    }
-  ];
+  useEffect(() => {
+    setTimeout(() => {
+      setUpcomingAppointments([
+        {
+          id: 1,
+          doctor: 'Dr. Aasha Poudel',
+          specialty: 'Cardiologist',
+          date: 'Oct 12, 2023',
+          time: '09:30 AM',
+          type: 'In-person',
+          location: 'Heart Care Center, Room 302',
+        },
+        {
+          id: 2,
+          doctor: 'Dr. Saugat Rijal',
+          specialty: 'General Physician',
+          date: 'Oct 15, 2023',
+          time: '02:15 PM',
+          type: 'Video Consult',
+          location: 'Online link',
+        }
+      ]);
+      setLoading(false);
+    }, 800);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

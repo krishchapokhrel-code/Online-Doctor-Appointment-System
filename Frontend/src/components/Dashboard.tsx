@@ -1,33 +1,33 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Asterisk, Settings, LogOut, Search, Bell, MessageSquare,
   LayoutDashboard, Calendar, Users, FileText
 } from 'lucide-react';
+import { useAuthStore } from '../store/authStore';
 import logo from '../assets/ah_logo.png';
 import PatientOverview from './PatientOverview';
 import PatientAppointments from './PatientAppointments';
 import PatientDoctors from './PatientDoctors';
 import PatientRecords from './PatientRecords';
 
-interface DashboardProps {
-  onNavigate: (screen: string) => void;
-}
-
-export default function Dashboard({ onNavigate }: DashboardProps) {
+export default function Dashboard() {
+  const navigate = useNavigate();
+  const logout = useAuthStore((state) => state.logout);
   const [activeTab, setActiveTab] = useState('dashboard');
 
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
-        return <PatientOverview onNavigate={onNavigate} />;
+        return <PatientOverview />;
       case 'appointments':
-        return <PatientAppointments onNavigate={onNavigate} />;
+        return <PatientAppointments />;
       case 'doctors':
-        return <PatientDoctors onNavigate={onNavigate} />;
+        return <PatientDoctors />;
       case 'records':
         return <PatientRecords />;
       default:
-        return <PatientOverview onNavigate={onNavigate} />;
+        return <PatientOverview />;
     }
   };
 
@@ -83,7 +83,10 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
             Settings
           </button>
           <button 
-            onClick={() => onNavigate('login')}
+            onClick={() => {
+              logout();
+              navigate('/login');
+            }}
             className="w-full flex items-center gap-3 px-3 py-2.5 text-text-sec hover:bg-gray-50 rounded-lg font-medium text-sm transition-colors"
           >
             <LogOut className="w-5 h-5" />

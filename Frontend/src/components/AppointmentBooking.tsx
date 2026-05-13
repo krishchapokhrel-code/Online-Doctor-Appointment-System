@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Check, Calendar as CalendarIcon, ChevronLeft, ChevronRight, CheckCircle2, ArrowRight } from 'lucide-react';
+import toast from 'react-hot-toast';
+import api from '../api';
 
 interface AppointmentBookingProps {
   onBack: () => void;
@@ -25,10 +27,15 @@ export default function AppointmentBooking({ onBack, onBook }: AppointmentBookin
 
   const [selectedSession, setSelectedSession] = useState<'AM' | 'PM'>('AM');
   const [selectedDate, setSelectedDate] = useState(5);
-  const [step, setStep] = useState<'time' | 'confirm'>('time');
+  const [step, setStep] = useState<'time' | 'details' | 'confirm'>('time');
   const [selectedSlot, setSelectedSlot] = useState<string | null>(
     amSlots.find((slot) => slot.status !== 'PACKED')?.time ?? null
   );
+
+  const [patientName, setPatientName] = useState('');
+  const [patientPhone, setPatientPhone] = useState('');
+  const [patientIssue, setPatientIssue] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const doctorName = localStorage.getItem('selectedDoctorName') || 'Dr. Aasha Poudel';
   const doctorSpecialty = localStorage.getItem('selectedDoctorSpecialty') || 'Cardiologist';
@@ -44,6 +51,33 @@ export default function AppointmentBooking({ onBack, onBook }: AppointmentBookin
       setSelectedSlot(firstAvailable);
     }
   }, [selectedSession]);
+
+  const handleBooking = async () => {
+    setLoading(true);
+    try {
+      const formattedTime = `${formattedDate} ${selectedSlot} ${selectedSession}`;
+      
+      const formData = new FormData();
+      formData.append('name', patientName);
+      formData.append('phone', patientPhone);
+      formData.append('issue', patientIssue);
+      formData.append('time', formattedTime);
+
+      const response = await api.post('/save-booking', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      toast.success('Appointment booked successfully!');
+      onBook();
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to book appointment.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const formattedDate = useMemo(() => {
     const date = new Date(2023, 9, selectedDate);
@@ -224,10 +258,71 @@ export default function AppointmentBooking({ onBack, onBook }: AppointmentBookin
                     Back to Doctors
                   </button>
                   <button 
-                    onClick={() => setStep('confirm')}
+                    onClick={() => setStep('details')}
                     disabled={!selectedSlot}
                     className={`px-8 py-3 rounded-full font-bold text-sm text-white shadow-[0_4px_16px_rgba(13,79,107,0.3)] transition-all flex items-center gap-2 ${
                       selectedSlot ? 'bg-primary hover:bg-primary-hover hover:translate-x-1' : 'bg-gray-300 cursor-not-allowed'
+                    }`}
+                  >
+                    Continue <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </>
+            ) : step === 'details' ? (
+              <>
+                <div className="flex justify-between items-start mb-8">
+                  <div>
+                    <h2 className="text-2xl font-bold text-text-main mb-1">Patient Details</h2>
+                    <p className="text-text-sec text-sm">Please provide your details.</p>
+                  </div>
+                </div>
+
+                <div className="flex-1 space-y-6">
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-text-main mb-1">Full Name</label>
+                      <input 
+                        type="text" 
+                        value={patientName}
+                        onChange={(e) => setPatientName(e.target.value)}
+                        placeholder="John Doe"
+                        className="w-full bg-input-bg border-[1.5px] border-input-border px-4 py-2.5 rounded-input focus:outline-none focus:border-accent"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-text-main mb-1">Phone Number</label>
+                      <input 
+                        type="tel" 
+                        value={patientPhone}
+                        onChange={(e) => setPatientPhone(e.target.value)}
+                        placeholder="98XXXXXXXX"
+                        className="w-full bg-input-bg border-[1.5px] border-input-border px-4 py-2.5 rounded-input focus:outline-none focus:border-accent"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-text-main mb-1">Reason for Visit / Issue</label>
+                      <textarea 
+                        value={patientIssue}
+                        onChange={(e) => setPatientIssue(e.target.value)}
+                        placeholder="Please describe your symptoms briefly..."
+                        className="w-full bg-input-bg border-[1.5px] border-input-border px-4 py-2.5 rounded-input focus:outline-none focus:border-accent h-24 resize-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-center mt-12 pt-6 border-t border-gray-100">
+                  <button 
+                    onClick={() => setStep('time')}
+                    className="px-6 py-3 rounded-full font-bold text-sm text-text-main border-2 border-gray-200 hover:bg-gray-50 transition-colors"
+                  >
+                    Back
+                  </button>
+                  <button 
+                    onClick={() => setStep('confirm')}
+                    disabled={!patientName || !patientPhone}
+                    className={`px-8 py-3 rounded-full font-bold text-sm text-white shadow-[0_4px_16px_rgba(13,79,107,0.3)] transition-all flex items-center gap-2 ${
+                      patientName && patientPhone ? 'bg-primary hover:bg-primary-hover hover:translate-x-1' : 'bg-gray-300 cursor-not-allowed'
                     }`}
                   >
                     Continue <ArrowRight className="w-4 h-4" />
@@ -262,19 +357,20 @@ export default function AppointmentBooking({ onBack, onBook }: AppointmentBookin
 
                 <div className="flex justify-between items-center mt-12 pt-6 border-t border-gray-100">
                   <button 
-                    onClick={() => setStep('time')}
-                    className="px-6 py-3 rounded-full font-bold text-sm text-text-main border-2 border-gray-200 hover:bg-gray-50 transition-colors"
+                    onClick={() => setStep('details')}
+                    disabled={loading}
+                    className="px-6 py-3 rounded-full font-bold text-sm text-text-main border-2 border-gray-200 hover:bg-gray-50 transition-colors disabled:opacity-50"
                   >
                     Back
                   </button>
                   <button 
-                    onClick={onBook}
-                    disabled={!selectedSlot}
+                    onClick={handleBooking}
+                    disabled={loading}
                     className={`px-8 py-3 rounded-full font-bold text-sm text-white shadow-[0_4px_16px_rgba(13,79,107,0.3)] transition-all flex items-center gap-2 ${
-                      selectedSlot ? 'bg-primary hover:bg-primary-hover hover:translate-x-1' : 'bg-gray-300 cursor-not-allowed'
+                      !loading ? 'bg-primary hover:bg-primary-hover hover:translate-x-1' : 'bg-gray-400 cursor-not-allowed'
                     }`}
                   >
-                    Confirm Appointment <ArrowRight className="w-4 h-4" />
+                    {loading ? 'Booking...' : 'Confirm Appointment'} <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
               </>
