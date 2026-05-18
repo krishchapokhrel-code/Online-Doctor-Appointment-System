@@ -14,6 +14,7 @@ import PatientDashboard from './pages/patient/PatientDashboard';
 import FindDoctors from './pages/patient/FindDoctors';
 import DoctorDetail from './pages/patient/DoctorDetail';
 import PatientAppointments from './pages/patient/PatientAppointments';
+import MedBotPage from './pages/patient/MedBotPage';
 
 // Doctor Pages
 import DoctorDashboard from './pages/doctor/DoctorDashboard';
@@ -59,6 +60,7 @@ export default function App() {
     if (page === 'doctor-detail') return <DoctorDetail doctor={selectedDoctor} user={user} onBack={() => setPage('doctors')} />;
     if (page === 'appointments') return <PatientAppointments user={user} />;
     if (page === 'chat') return <ChatPage user={user} doctorProfile={doctorProfile} />;
+    if (page === 'medbot') return <MedBotPage user={user} />;
     
     // Doctor pages
     if (page === 'doc-dashboard') return <DoctorDashboard user={user} doctorProfile={doctorProfile} />;

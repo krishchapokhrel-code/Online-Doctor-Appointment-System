@@ -7,6 +7,7 @@ export function Sidebar({ user, doctorProfile, activePage, setPage, onLogout }) 
     { id: 'doctors', label: 'Find Doctors', icon: 'search' },
     { id: 'appointments', label: 'My Appointments', icon: 'calendar' },
     { id: 'chat', label: 'Messages', icon: 'message' },
+    { id: 'medbot', label: 'AI Assistant', icon: 'bot' },
   ];
   const doctorNav = [
     { id: 'doc-dashboard', label: 'Dashboard', icon: 'home' },

@@ -17,6 +17,7 @@ from routes.doctors import doctors_bp
 from routes.appointments import appointments_bp
 from routes.admin import admin_bp
 from routes.chat import chat_bp
+from routes.chatbot import chatbot_bp
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -41,6 +42,7 @@ app.register_blueprint(doctors_bp, url_prefix='/api')
 app.register_blueprint(appointments_bp, url_prefix='/api')
 app.register_blueprint(admin_bp, url_prefix='/api')
 app.register_blueprint(chat_bp, url_prefix='/api')
+app.register_blueprint(chatbot_bp, url_prefix='/api')
 
 # Serve uploaded media files
 @app.route('/uploads/<path:filename>')
