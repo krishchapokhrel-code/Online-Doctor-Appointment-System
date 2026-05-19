@@ -9,9 +9,12 @@ chatbot_bp = Blueprint('chatbot', __name__)
 
 # Load model
 try:
-    with open('backend/model.pkl', 'rb') as f:
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    model_path = os.path.join(BASE_DIR, 'model.pkl')
+    vectorizer_path = os.path.join(BASE_DIR, 'vectorizer.pkl')
+    with open(model_path, 'rb') as f:
         model = pickle.load(f)
-    with open('backend/vectorizer.pkl', 'rb') as f:
+    with open(vectorizer_path, 'rb') as f:
         vectorizer = pickle.load(f)
 except Exception as e:
     model = None
@@ -60,7 +63,12 @@ def chatbot_response():
             reply = "Here are our available doctors and their consultation hours:\n\n"
             for d in docs_data:
                 slots_str = ", ".join(d['available_slots']) if d['available_slots'] else "No slots configured yet"
-                reply += f"• Dr. {d['name']} ({d['specialty']}):\n  Consultation Fee: ${d['consultation_fee']}\n  Slots: {slots_str}\n\n"
+                name_str = d['name']
+                if name_str.lower().startswith('dr.'):
+                    name_str = name_str[3:].strip()
+                elif name_str.lower().startswith('dr '):
+                    name_str = name_str[3:].strip()
+                reply += f"• Dr. {name_str} ({d['specialty']}):\n  Consultation Fee: ${d['consultation_fee']}\n  Slots: {slots_str}\n\n"
             reply += "Would you like to book an appointment with one of them?"
         action_data = {'type': 'timings', 'doctors': docs_data}
         

@@ -81,6 +81,7 @@ def appt_to_dict(a):
         'patient_name': a.patient.name,
         'patient_email': a.patient.email,
         'doctor_id': a.doctor_id,
+        'doctor_user_id': a.doctor.user_id,
         'doctor_name': a.doctor.user.name,
         'doctor_specialty': a.doctor.specialty,
         'doctor_profile': f'/uploads/{a.doctor.profile_image}' if a.doctor.profile_image else None,

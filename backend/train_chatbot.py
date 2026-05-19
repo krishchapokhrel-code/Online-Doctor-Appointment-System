@@ -5,7 +5,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import make_pipeline
 
-CSV_PATH = "backend/medical_chatbot.csv"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CSV_PATH = os.path.join(BASE_DIR, "medical_chatbot.csv")
 
 # Extra training samples for timings and conversational booking
 extra_samples = [
@@ -68,9 +69,9 @@ def train():
     vectorizer = pipeline.named_steps['tfidfvectorizer']
     model = pipeline.named_steps['logisticregression']
     
-    with open("backend/vectorizer.pkl", "wb") as f:
+    with open(os.path.join(BASE_DIR, "vectorizer.pkl"), "wb") as f:
         pickle.dump(vectorizer, f)
-    with open("backend/model.pkl", "wb") as f:
+    with open(os.path.join(BASE_DIR, "model.pkl"), "wb") as f:
         pickle.dump(model, f)
         
     print("✅ Model trained and saved successfully (model.pkl, vectorizer.pkl)!")
