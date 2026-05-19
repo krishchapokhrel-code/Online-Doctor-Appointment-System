@@ -48,6 +48,16 @@ class Message(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     sender = db.relationship('User', foreign_keys=[sender_id])
 
+class Feedback(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    appointment_id = db.Column(db.Integer, db.ForeignKey('appointment.id'), unique=True, nullable=False)
+    diagnosis = db.Column(db.Text, nullable=False)
+    prescription = db.Column(db.Text, nullable=False)
+    advice = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    appointment = db.relationship('Appointment', backref=db.backref('feedback', uselist=False))
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png','jpg','jpeg','gif','pdf'}
 
@@ -90,4 +100,11 @@ def appt_to_dict(a):
         'status': a.status,
         'notes': a.notes,
         'created_at': a.created_at.isoformat(),
+        'feedback': {
+            'id': a.feedback.id,
+            'diagnosis': a.feedback.diagnosis,
+            'prescription': a.feedback.prescription,
+            'advice': a.feedback.advice,
+            'created_at': a.feedback.created_at.isoformat()
+        } if a.feedback else None,
     }

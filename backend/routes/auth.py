@@ -70,3 +70,26 @@ def login():
         doc_id = doc.id if doc else None
     return jsonify({'user_id': u.id, 'name': u.name, 'email': u.email,
                     'role': u.role, 'doctor_id': doc_id})
+
+@auth_bp.route('/forgot-password', methods=['POST'])
+def forgot_password():
+    d = request.json
+    email = d.get('email')
+    u = User.query.filter_by(email=email).first()
+    if not u:
+        return jsonify({'error': 'Email address not registered'}), 404
+    return jsonify({'message': 'User verified. Please set your new password.'})
+
+@auth_bp.route('/reset-password', methods=['POST'])
+def reset_password():
+    d = request.json
+    email = d.get('email')
+    new_password = d.get('new_password')
+    if not new_password or len(new_password) < 6:
+        return jsonify({'error': 'Password must be at least 6 characters long'}), 400
+    u = User.query.filter_by(email=email).first()
+    if not u:
+        return jsonify({'error': 'Email address not registered'}), 404
+    u.password = generate_password_hash(new_password)
+    db.session.commit()
+    return jsonify({'message': 'Password has been reset successfully. Please log in.'})

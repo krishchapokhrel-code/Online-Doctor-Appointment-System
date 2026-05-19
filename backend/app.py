@@ -18,6 +18,7 @@ from routes.appointments import appointments_bp
 from routes.admin import admin_bp
 from routes.chat import chat_bp
 from routes.chatbot import chatbot_bp
+from routes.feedback import feedback_bp
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -28,7 +29,10 @@ os.makedirs(os.path.join(UPLOAD_FOLDER, 'profiles'), exist_ok=True)
 os.makedirs(os.path.join(UPLOAD_FOLDER, 'degrees'), exist_ok=True)
 os.makedirs(os.path.join(UPLOAD_FOLDER, 'chat'), exist_ok=True)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(BASE_DIR, "medbook.db")}'
+if os.environ.get('TESTING') == 'True':
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(BASE_DIR, "medbook.db")}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SECRET_KEY'] = 'medbook-secret-2024'
@@ -43,6 +47,7 @@ app.register_blueprint(appointments_bp, url_prefix='/api')
 app.register_blueprint(admin_bp, url_prefix='/api')
 app.register_blueprint(chat_bp, url_prefix='/api')
 app.register_blueprint(chatbot_bp, url_prefix='/api')
+app.register_blueprint(feedback_bp, url_prefix='/api')
 
 # Serve uploaded media files
 @app.route('/uploads/<path:filename>')
