@@ -61,9 +61,15 @@ def register():
 @auth_bp.route('/login', methods=['POST'])
 def login():
     d = request.json
+    role = d.get('role')
     u = User.query.filter_by(email=d['email']).first()
     if not u or not check_password_hash(u.password, d['password']):
         return jsonify({'error': 'Invalid credentials'}), 401
+        
+    # Enforce role alignment to block cross-login attempts
+    if role and u.role != role:
+        return jsonify({'error': f"Unauthorized access. Your profile is registered as a {u.role}."}), 403
+        
     doc_id = None
     if u.role == 'doctor':
         doc = Doctor.query.filter_by(user_id=u.id).first()

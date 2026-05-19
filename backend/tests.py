@@ -26,10 +26,10 @@ class MedBookTestCase(unittest.TestCase):
         with app.app_context():
             db.create_all()
             # Seed default admin if not already present
-            if not User.query.filter_by(email='admin@medbook.com').first():
+            if not User.query.filter_by(email='admin@aurahealth.com').first():
                 admin = User(
                     name='Admin', 
-                    email='admin@medbook.com',
+                    email='admin@aurahealth.com',
                     password=generate_password_hash('admin123'), 
                     role='admin'
                 )

@@ -56,12 +56,12 @@ def serve_upload(filename):
 
 # Seed the admin credentials
 def seed():
-    if not User.query.filter_by(email='admin@medbook.com').first():
-        admin = User(name='Admin', email='admin@medbook.com',
+    if not User.query.filter_by(email='admin@aurahealth.com').first():
+        admin = User(name='Admin', email='admin@aurahealth.com',
                      password=generate_password_hash('admin123'), role='admin')
         db.session.add(admin)
         db.session.commit()
-        print('Admin created: admin@medbook.com / admin123')
+        print('Admin created: admin@aurahealth.com / admin123')
 
 with app.app_context():
     db.create_all()
